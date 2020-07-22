@@ -68,9 +68,9 @@ def realtime(tpercent):
     while True:
         sleep(0.1)
         plugged, percent = get_battery_status()
-        if plugged and percent - tpercent < 1 and percent >= optimal_battery_cr:
+        if plugged and percent - tpercent < 5 and percent >= optimal_battery_cr:
             continue
-        if not plugged and tpercent - percent < 1 and percent <= low_battery_cr: 
+        if not plugged and tpercent - percent < 3 and percent <= low_battery_cr: 
             continue
         else:
             break
