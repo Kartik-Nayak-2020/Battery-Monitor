@@ -23,7 +23,7 @@ def gtts_notify(cmd,name,flag):
             os.mkdir("Battery Monitor")
         except:
             pass
-        os.chdir(r"C:\Users\\"+name+"\\Documents\\Battery Monitor")
+        os.chdir(r"C:\\Users\\"+name+"\\Documents\\Battery Monitor")
     except:
         os.chdir("/home/kartik/Documents")
         try:
