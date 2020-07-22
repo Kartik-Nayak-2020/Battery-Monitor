@@ -18,12 +18,12 @@ def gtts_notify(cmd,name,flag):
     '''This funtion to alert user about battery status if it's optimally charged or running low.'''
     tts = gTTS(text=cmd, lang='en')
     try:
-        os.chdir(r"C:\Users\\"+name+"\Documents")
+        os.chdir(r"C:\\Users\\"+name+"\\Documents")
         try:     
             os.mkdir("Battery Monitor")
         except:
             pass
-        os.chdir(r"C:\Users\\"+name+"\Documents\Battery Monitor")
+        os.chdir(r"C:\Users\\"+name+"\\Documents\\Battery Monitor")
     except:
         os.chdir("/home/kartik/Documents")
         try:
