@@ -108,7 +108,7 @@ if __name__ == "__main__":
     '''On reaching low_battery_cr program will let the user know that the battery is running low and will continue to do so every 3% battery drop until user connect the device to
     AC. On reaching optimal_battery_cr program will let the user know that the battery is optimally charged and continue to do so for every 5% batery increment until it
     reaches 100% or user unplug the device from AC'''
-    low_battery_cr = 50
-    optimal_battery_cr = 300
+    low_battery_cr = 40
+    optimal_battery_cr = 80
     name = get_username()
     main(name)
