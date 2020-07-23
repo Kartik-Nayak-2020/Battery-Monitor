@@ -18,7 +18,6 @@ def get_username():
 
 def gtts_notify(cmd,name,flag):
     '''This funtion to alert user about battery status if it's optimally charged or running low.'''
-    tts = gTTS(text=cmd, lang='en')
     try:
         os.chdir(r"C:\\Users\\"+name+"\\Documents")
         try:     
@@ -34,6 +33,7 @@ def gtts_notify(cmd,name,flag):
             pass
         os.chdir("/home/"+name+"/Documents/Battery Monitor")
     try:
+        tts = gTTS(text=cmd, lang='en')
         file_name = "Battery Monitor.mp3"
         tts.save(file_name)
         playsound(file_name)
