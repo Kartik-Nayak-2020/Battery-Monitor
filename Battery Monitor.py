@@ -4,7 +4,6 @@ from time import sleep
 from gtts import gTTS
 import os
 from playsound import playsound
-from winsound import Beep
 
 
 def get_username():
@@ -25,22 +24,16 @@ def gtts_notify(cmd,name,flag):
             pass
         os.chdir(r"C:\\Users\\"+name+"\\Documents\\Battery Monitor")
     except:
-        os.chdir("/home/kartik/Documents")
+        os.chdir("/home/"+name+"/Documents")
         try:
             os.mkdir("Battery Monitor")
         except:
             pass
-        os.chdir("/home/kartik/Documents/Battery Monitor")
-    try:
-        file_name = "Battery Monitor.mp3"
-        tts.save(file_name)
-        playsound(file_name)
-        os.remove(file_name)
-    except:
-        if flag == "optimal":
-            Beep(950,730)
-        elif flag == "low":
-            [Beep(800,750) for _ in range(2)]
+        os.chdir("/home/"+name+"/Documents/Battery Monitor")
+    file_name = "Battery Monitor.mp3"
+    tts.save(file_name)
+    playsound(file_name)
+    os.remove(file_name)
     
 
 def optimal_battery(percent,name):
@@ -105,4 +98,3 @@ if __name__ == "__main__":
     optimal_battery_cr = 80
     name = get_username()
     main(name)
- 
