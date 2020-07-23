@@ -4,7 +4,10 @@ from time import sleep
 from gtts import gTTS
 import os
 from playsound import playsound
-
+try:
+    from winsound import Beep
+except:
+    pass
 
 def get_username():
     '''This function will retrieve username from PC (Windows only).'''
@@ -30,11 +33,22 @@ def gtts_notify(cmd,name,flag):
         except:
             pass
         os.chdir("/home/"+name+"/Documents/Battery Monitor")
-    file_name = "Battery Monitor.mp3"
-    tts.save(file_name)
-    playsound(file_name)
-    os.remove(file_name)
-    
+    try:
+        file_name = "Battery Monitor.mp3"
+        tts.save(file_name)
+        playsound(file_name)
+        os.remove(file_name)
+    except:
+        try:
+            if flag == "optimal":
+                Beep(950,730)
+            elif flag == "low":
+                [Beep(800,750) for _ in range(2)]
+        except:
+            if flag == "optimal":
+                os.system(f'play -nq -t alsa synth {0.5} sine {320}')
+            elif flag == "low":
+                [os.system(f'play -nq -t alsa synth {0.5} sine {250}') for _ in range(2)]    
 
 def optimal_battery(percent,name):
     optimal_notify = [f"Battery has been charged to {int(percent)}%. You can unplug the device now", "Battery has been optimally charged. You can unplug the device now"]
@@ -94,7 +108,7 @@ if __name__ == "__main__":
     '''On reaching low_battery_cr program will let the user know that the battery is running low and will continue to do so every 3% battery drop until user connect the device to
     AC. On reaching optimal_battery_cr program will let the user know that the battery is optimally charged and continue to do so for every 5% batery increment until it
     reaches 100% or user unplug the device from AC'''
-    low_battery_cr = 40
-    optimal_battery_cr = 80
+    low_battery_cr = 50
+    optimal_battery_cr = 300
     name = get_username()
     main(name)
