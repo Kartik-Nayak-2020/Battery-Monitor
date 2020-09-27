@@ -10,7 +10,7 @@ except:
     pass
 
 def get_username():
-    '''This function will retrieve username from PC (Windows only).'''
+    '''This function will retrieve username from OS.'''
     for user,name in os.environ.items():
         if user == "USERNAME":
             return name
