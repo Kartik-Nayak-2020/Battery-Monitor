@@ -1,37 +1,41 @@
 import psutil
+import os
 from random import choice
 from time import sleep
 from gtts import gTTS
-import os
 from playsound import playsound
+
+
 try:
     from winsound import Beep
 except:
     pass
 
+
 def get_username():
     '''This function will retrieve username from OS.'''
-    for user,name in os.environ.items():
+    for user, name in os.environ.items():
         if user == "USERNAME":
             return name
 
 
-def gtts_notify(cmd,name,flag):
+def gtts_notify(cmd, name, flag):
     '''This funtion to alert user about battery status if it's optimally charged or running low.'''
     try:
-        os.chdir(r"C:\\Users\\"+name+"\\Documents")
-        try:     
-            os.mkdir("Battery Monitor")
-        except:
-            pass
-        os.chdir(r"C:\\Users\\"+name+"\\Documents\\Battery Monitor")
-    except:
-        os.chdir("/home/"+name+"/Documents")
+        os.chdir(r"C:\\Users\\"+name)
         try:
-            os.mkdir("Battery Monitor")
+            os.mkdir("Battery_Monitor")
+            os.popen("attrib +h Battery_Monitor")
         except:
             pass
-        os.chdir("/home/"+name+"/Documents/Battery Monitor")
+        os.chdir(r"C:\\Users\\"+name+"\\Battery_Monitor")
+    except:
+        os.chdir("/home/"+name)
+        try:
+            os.mkdir(".Battery Monitor")
+        except:
+            pass
+        os.chdir("/home/"+name+"/.Battery Monitor")
     try:
         tts = gTTS(text=cmd, lang='en')
         file_name = "Battery Monitor.mp3"
@@ -41,25 +45,29 @@ def gtts_notify(cmd,name,flag):
     except:
         try:
             if flag == "optimal":
-                Beep(950,730)
+                Beep(950, 730)
             elif flag == "low":
-                [Beep(800,750) for _ in range(2)]
+                [Beep(800, 750) for _ in range(2)]
         except:
             if flag == "optimal":
                 os.system(f'play -nq -t alsa synth {0.5} sine {320}')
             elif flag == "low":
-                [os.system(f'play -nq -t alsa synth {0.5} sine {250}') for _ in range(2)]    
+                [os.system(
+                    f'play -nq -t alsa synth {0.5} sine {250}') for _ in range(2)]
 
-def optimal_battery(percent,name):
-    optimal_notify = [f"Battery has been charged to {int(percent)}%. You can unplug the device now", "Battery has been optimally charged. You can unplug the device now"]
+
+def optimal_battery(percent, name):
+    optimal_notify = [f"Battery has been charged to {int(percent)}%. You can unplug the device now",
+                      "Battery has been optimally charged. You can unplug the device now"]
     flag = "optimal"
-    gtts_notify(choice(optimal_notify),name,flag)
-    
+    gtts_notify(choice(optimal_notify), name, flag)
 
-def low_battery(percent,name):
-    low_notify = [f"Current battery status is {int(percent)}%. Please charge your device", "Battery status is very low. You better start charging your device"]
+
+def low_battery(percent, name):
+    low_notify = [f"Current battery status is {int(percent)}%. Please charge your device",
+                  "Battery status is very low. You better start charging your device"]
     flag = "low"
-    gtts_notify(choice(low_notify),name,flag)
+    gtts_notify(choice(low_notify), name, flag)
 
 
 def get_battery_status():
@@ -77,7 +85,7 @@ def realtime(tpercent):
         plugged, percent = get_battery_status()
         if plugged and percent - tpercent < 5 and percent >= optimal_battery_cr:
             continue
-        if not plugged and tpercent - percent < 3 and percent <= low_battery_cr: 
+        if not plugged and tpercent - percent < 3 and percent <= low_battery_cr:
             continue
         else:
             break
@@ -91,13 +99,13 @@ def main(name):
             continue
 
         elif plugged and percent >= optimal_battery_cr:
-            optimal_battery(percent,name)
-            tpercent = percent 
+            optimal_battery(percent, name)
+            tpercent = percent
             if plugged:
                 realtime(tpercent)
 
         elif not plugged and percent <= low_battery_cr:
-            low_battery(percent,name)
+            low_battery(percent, name)
             tpercent = percent
             if not plugged:
                 realtime(tpercent)
