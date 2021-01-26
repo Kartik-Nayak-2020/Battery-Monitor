@@ -14,28 +14,18 @@ except:
 
 def get_username():
     '''This function will retrieve username from OS.'''
-    for user, name in os.environ.items():
-        if user == "USERNAME":
-            return name
+    if os.name == 'posix':
+        for user, user_name in os.environ.items():
+            if user == "USER":
+                return user_name
+    else:
+        for user, user_name in os.environ.items():
+            if user == "USERNAME":
+                return user_name
 
 
 def gtts_notify(cmd, name, flag):
     '''This funtion to alert user about battery status if it's optimally charged or running low.'''
-    try:
-        os.chdir(r"C:\\Users\\"+name)
-        try:
-            os.mkdir("Battery_Monitor")
-            os.popen("attrib +h Battery_Monitor")
-        except:
-            pass
-        os.chdir(r"C:\\Users\\"+name+"\\Battery_Monitor")
-    except:
-        os.chdir("/home/"+name)
-        try:
-            os.mkdir(".Battery Monitor")
-        except:
-            pass
-        os.chdir("/home/"+name+"/.Battery Monitor")
     try:
         tts = gTTS(text=cmd, lang='en')
         file_name = "Battery Monitor.mp3"
@@ -56,6 +46,14 @@ def gtts_notify(cmd, name, flag):
                     f'play -nq -t alsa synth {0.5} sine {250}') for _ in range(2)]
 
 
+def get_battery_status():
+    '''This function will check the current battery status including percent and whether if it is charging or not.'''
+    battery = psutil.sensors_battery()
+    plugged = battery.power_plugged
+    percent = int(battery.percent)
+    return plugged, percent
+
+
 def optimal_battery(percent, name):
     optimal_notify = [f"Battery has been charged to {int(percent)}%. You can unplug the device now",
                       "Battery has been optimally charged. You can unplug the device now"]
@@ -70,14 +68,6 @@ def low_battery(percent, name):
     gtts_notify(choice(low_notify), name, flag)
 
 
-def get_battery_status():
-    '''This function will check the current battery status including percent and whether if it is charging or not.'''
-    battery = psutil.sensors_battery()
-    plugged = battery.power_plugged
-    percent = int(battery.percent)
-    return plugged, percent
-
-
 def realtime(tpercent):
     '''This function will check the battery status continuously to let user know about battey status according to the setting.'''
     while True:
@@ -89,6 +79,24 @@ def realtime(tpercent):
             continue
         else:
             break
+
+
+def get_dir(user_name):
+    destination_folder = ".Battery_Monitor"
+    if os.name == 'posix':
+        os.chdir("/home/"+user_name)
+        if not os.path.exists(destination_folder):
+            os.mkdir(destination_folder)
+        os.chdir(destination_folder)
+        destination_dir = os.getcwd()
+    else:
+        os.chdir("C:/Users/"+user_name)
+        if not os.path.exists(destination_folder):
+            os.mkdir(destination_folder)
+            os.popen("attrib +h " + destination_folder)
+        os.chdir(destination_folder)
+        destination_dir = os.getcwd()
+    return destination_dir
 
 
 def main(name):
@@ -113,10 +121,11 @@ def main(name):
 
 
 if __name__ == "__main__":
-    '''On reaching low_battery_cr program will let the user know that the battery is running low and will continue to do so every 3% battery drop until user connect the device to
-    AC. On reaching optimal_battery_cr program will let the user know that the battery is optimally charged and continue to do so for every 5% batery increment until it
+    '''On reaching low_battery_cr, program will let the user know that the battery is running low and will continue to do so every 3% battery drop until user connect the device to
+    AC. On reaching optimal_battery_cr, program will let the user know that the battery is optimally charged and continue to do so for every 5% batery increment until it
     reaches 100% or user unplug the device from AC'''
-    low_battery_cr = 26
-    optimal_battery_cr = 80
-    name = get_username()
-    main(name)
+    low_battery_cr = 40
+    optimal_battery_cr = 20
+    user_name = get_username()
+    destination_dir = get_dir(user_name)
+    main(destination_dir)
