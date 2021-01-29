@@ -55,6 +55,7 @@ def get_battery_status():
 
 
 def optimal_battery(percent, name):
+    '''Selects message to be read out to the user'''
     optimal_notify = [f"Battery has been charged to {int(percent)}%. You can unplug the device now",
                       "Battery has been optimally charged. You can unplug the device now"]
     flag = "optimal"
@@ -62,6 +63,7 @@ def optimal_battery(percent, name):
 
 
 def low_battery(percent, name):
+    '''Selects message to be read out to the user'''
     low_notify = [f"Current battery status is {int(percent)}%. Please charge your device",
                   "Battery status is very low. You better start charging your device"]
     flag = "low"
@@ -82,6 +84,7 @@ def realtime(tpercent):
 
 
 def get_dir(user_name):
+    '''Checks the OS to save necessary files in user folder'''
     destination_folder = ".Battery_Monitor"
     if os.name == 'posix':
         os.chdir("/home/"+user_name)
@@ -102,30 +105,33 @@ def get_dir(user_name):
 def main(name):
     '''This is main function responsible for running all the battery monitoring services'''
     while True:
-        plugged, percent = get_battery_status()
-        if plugged and percent == 100:
+        try:
+            plugged, percent = get_battery_status()
+            if plugged and percent == 100:
+                continue
+
+            elif plugged and percent >= optimal_battery_cr:
+                optimal_battery(percent, name)
+                tpercent = percent
+                if plugged:
+                    realtime(tpercent)
+
+            elif not plugged and percent <= low_battery_cr:
+                low_battery(percent, name)
+                tpercent = percent
+                if not plugged:
+                    realtime(tpercent)
+            sleep(0.1)
+        except:
             continue
-
-        elif plugged and percent >= optimal_battery_cr:
-            optimal_battery(percent, name)
-            tpercent = percent
-            if plugged:
-                realtime(tpercent)
-
-        elif not plugged and percent <= low_battery_cr:
-            low_battery(percent, name)
-            tpercent = percent
-            if not plugged:
-                realtime(tpercent)
-        sleep(0.1)
 
 
 if __name__ == "__main__":
     '''On reaching low_battery_cr, program will let the user know that the battery is running low and will continue to do so every 3% battery drop until user connect the device to
     AC. On reaching optimal_battery_cr, program will let the user know that the battery is optimally charged and continue to do so for every 5% batery increment until it
     reaches 100% or user unplug the device from AC'''
-    low_battery_cr = 40
-    optimal_battery_cr = 20
+    low_battery_cr =40
+    optimal_battery_cr = 80
     user_name = get_username()
     destination_dir = get_dir(user_name)
     main(destination_dir)
