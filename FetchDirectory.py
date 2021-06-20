@@ -13,7 +13,7 @@ def getTargetDirectory():
                 targetDirectory = f"/home/{userName}/{targetFolderName}"
                 if not os.path.exists(targetDirectory):
                     os.mkdir(targetDirectory)
-                    os.chdir(targetDirectory)
+                os.chdir(targetDirectory)
     else:
         for user, userName in os.environ.items():
             if user == "USERNAME":
