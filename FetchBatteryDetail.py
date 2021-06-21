@@ -1,6 +1,6 @@
 import psutil
 
-optimalBatteryPercent = 70
+optimalBatteryPercent = 80
 lowBatteryPercent = 40
 
 
