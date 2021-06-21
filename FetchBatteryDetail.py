@@ -1,5 +1,5 @@
 import psutil
-
+from time import sleep
 optimalBatteryPercent = 80
 lowBatteryPercent = 40
 
@@ -15,6 +15,7 @@ def getBatteryStatus():
 def realtimeBatteryStatus(tpercent):
     '''Calculate time interval to convey the message to user in specified time'''
     while True:
+        sleep(0.1)
         plugged, percent = getBatteryStatus()
         if plugged and percent - tpercent < 5 and percent >= optimalBatteryPercent:
             continue
