@@ -1,13 +1,18 @@
 from time import sleep
 
-from FetchBatteryDetail import getBatteryStatus, realtimeBatteryStatus, optimalBatteryPercent, lowBatteryPercent
+from FetchBatteryDetail import (
+    getBatteryStatus,
+    realtimeBatteryStatus,
+    optimalBatteryPercent,
+    lowBatteryPercent,
+)
 from NotifyUser import speakToNotify
-from FetchDirectory import getTargetDirectory
+from FetchDirectory import createTargetDirectory
 
 
 def main():
-    '''Main executing function'''
-    getTargetDirectory()
+    """Main executing function"""
+    createTargetDirectory()
     while True:
         try:
             plugged, percent = getBatteryStatus()
