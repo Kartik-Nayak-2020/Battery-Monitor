@@ -16,6 +16,7 @@ def createTargetDirectory():
 
             try:
                 import ctypes
+
                 hideFileFlag = 0x02
                 ctypes.windll.kernel32.SetFileAttributesW(
                     targetDirectory, hideFileFlag)
