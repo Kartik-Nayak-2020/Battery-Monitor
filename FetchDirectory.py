@@ -12,12 +12,13 @@ def createTargetDirectory():
 
             if not os.path.exists(targetDirectory):
                 os.mkdir(targetDirectory)
-                os.chdir(targetDirectory)
+            os.chdir(targetDirectory)
 
             try:
                 import ctypes
+                hideFileFlag = 0x02
+                ctypes.windll.kernel32.SetFileAttributesW(
+                    targetDirectory, hideFileFlag)
 
-                hideFile = ctypes.windll.kernel32.SetFileAttributesW
-                hideFile(targetDirectory)
             except:
                 pass
