@@ -1,11 +1,12 @@
-import psutil
 from time import sleep
 
-optimalBatteryPercent = 80
-lowBatteryPercent = 40
+import psutil
+
+optimal_battery_percent = 80
+low_battery_percent = 40
 
 
-def getBatteryStatus():
+def get_battery_status():
     """Fetch battery percent and plugged in status"""
     battery = psutil.sensors_battery()
     plugged = battery.power_plugged
@@ -13,14 +14,14 @@ def getBatteryStatus():
     return plugged, percent
 
 
-def realtimeBatteryStatus(tpercent):
+def watch_battery_status(temp_percent):
     """Calculate time interval to convey the message to user in specified time"""
     while True:
         sleep(0.1)
-        plugged, percent = getBatteryStatus()
-        if plugged and percent - tpercent < 5 and percent >= optimalBatteryPercent:
+        plugged, percent = get_battery_status()
+        if plugged and percent - temp_percent < 5 and percent >= optimal_battery_percent:
             continue
-        if not plugged and tpercent - percent < 3 and percent <= lowBatteryPercent:
+        if not plugged and temp_percent - percent < 3 and percent <= low_battery_percent:
             continue
         else:
             break

@@ -1,42 +1,42 @@
 from time import sleep
 
 from FetchBatteryDetail import (
-    getBatteryStatus,
-    realtimeBatteryStatus,
-    optimalBatteryPercent,
-    lowBatteryPercent,
+    get_battery_status,
+    watch_battery_status,
+    optimal_battery_percent,
+    low_battery_percent,
 )
-from NotifyUser import speakToNotify
-from FetchDirectory import createTargetDirectory
+from FetchDirectory import create_target_directory
+from NotifyUser import notify_message
 
 
 def main():
     """Main executing function"""
-    createTargetDirectory()
+    create_target_directory()
     while True:
         try:
-            plugged, percent = getBatteryStatus()
+            plugged, percent = get_battery_status()
 
             if plugged and percent == 100:
                 continue
 
-            elif plugged and percent >= optimalBatteryPercent:
+            elif plugged and percent >= optimal_battery_percent:
                 message = f"Battery has been charged to {percent}%. You can unplug the device now"
                 flag = "optimal"
-                speakToNotify(message, flag)
-                tpercent = percent
+                notify_message(message, flag)
+                temp_percent = percent
                 if plugged:
-                    realtimeBatteryStatus(tpercent)
+                    watch_battery_status(temp_percent)
 
-            elif not plugged and percent <= lowBatteryPercent:
-                message = f"Current battery status is {percent}%. Please charge your device now"
+            elif not plugged and percent <= low_battery_percent:
+                message = f"Current battery status is {percent}%. Please charge your device"
                 flag = "low"
-                speakToNotify(message, flag)
-                tpercent = percent
+                notify_message(message, flag)
+                temp_percent = percent
                 if not plugged:
-                    realtimeBatteryStatus(tpercent)
+                    watch_battery_status(temp_percent)
             sleep(0.1)
-        except:
+        except (OSError, RuntimeError):
             continue
 
 
